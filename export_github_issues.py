@@ -35,9 +35,10 @@ def write_issues(response):
             comments = comments_request.json()
         if comments != "":
             comments_list = get_comments(comments)
-
+        params = issue['url'][29:].encode('utf-8')
+        issue_url = "https://github.com/" +  params
         # Select the values from the issue to put into the row
-        row = [issue['title'].encode('utf-8'), issue['body'].encode('utf-8'), comments_list]
+        row = [issue['title'].encode('utf-8'), issue['body'].encode('utf-8'), comments_list, issue_url]
         csvout.writerow(row)
 
 def get_comments(comments):
@@ -51,7 +52,7 @@ r = requests.get(ISSUES_FOR_REPO_URL, auth=AUTH)
 csvfile = '%s-issues.csv' % (REPO.replace('/', '-'))
 csvout = csv.writer(open(csvfile, 'wb'))
 # Edit this to change what values to write
-csvout.writerow(('Title', 'Body', 'Comments'))
+csvout.writerow(('Title', 'Body', 'Comments', 'URL'))
 write_issues(r)
 
 #more pages? examine the 'link' header returned
