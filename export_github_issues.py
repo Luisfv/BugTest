@@ -25,12 +25,10 @@ def write_issues(response):
     if not response.status_code == 200:
         raise Exception(response.status_code)
     for issue in response.json():
-        print issue
         comments = ""
         comments_list = []
-        comments_url = issue['comments_url'].encode('utf-8') + "?access_token=" + GITHUB_PASSWORD
-        comments_request = requests.get(comments_url)
-        print comments_url
+        comments_url = issue['comments_url'].encode('utf-8')
+        comments_request = requests.get(comments_url, auth=AUTH)
         if not comments_request.status_code == 200:
             raise Exception(comments_request.status_code)
         else:
