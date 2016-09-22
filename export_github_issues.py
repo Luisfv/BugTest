@@ -19,9 +19,11 @@ GITHUB_PASSWORD = getpass.getpass()
 REPO = args[2]
 ISSUES_FOR_REPO_URL = 'https://api.github.com/repos/%s/issues' % REPO
 AUTH = (GITHUB_USER, GITHUB_PASSWORD)
+REQUEST_COUNT = 0
 
 def write_issues(response):
     "output a list of issues to csv"
+    global REQUEST_COUNT
     if not response.status_code == 200:
         raise Exception(response.status_code)
     for issue in response.json():
@@ -29,6 +31,7 @@ def write_issues(response):
         comments_list = []
         comments_url = issue['comments_url'].encode('utf-8')
         comments_request = requests.get(comments_url, auth=AUTH)
+        REQUEST_COUNT += 1
         if not comments_request.status_code == 200:
             raise Exception(comments_request.status_code)
         else:
@@ -49,6 +52,7 @@ def get_comments(comments):
     return comments_list
 
 r = requests.get(ISSUES_FOR_REPO_URL, auth=AUTH)
+REQUEST_COUNT += 1
 csvfile = '%s-issues.csv' % (REPO.replace('/', '-'))
 csvout = csv.writer(open(csvfile, 'wb'))
 # Edit this to change what values to write
@@ -72,12 +76,19 @@ if 'link' in r.headers:
         [(rel[6:-1], url[url.index('<')+1:-1]) for url, rel in
             [link.split(';') for link in
                 r.headers['link'].split(',')]])
+
     while 'last' in pages and 'next' in pages:
         r = requests.get(pages['next'], auth=AUTH)
+        REQUEST_COUNT += 1
         write_issues(r)
+        print REQUEST_COUNT
+        if REQUEST_COUNT > 1000:
+            print "Request limit. Stopping..."
+            break
         if pages['next'] == pages['last']:
             break
         pages = dict(
         [(rel[6:-1], url[url.index('<')+1:-1]) for url, rel in
             [link.split(';') for link in
                 r.headers['link'].split(',')]])
+print REQUEST_COUNT
