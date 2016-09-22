@@ -56,6 +56,17 @@ csvout.writerow(('Title', 'Body', 'Comments', 'URL'))
 write_issues(r)
 
 #more pages? examine the 'link' header returned
+# if 'link' in r.headers:
+#     pages = dict(
+#         [(rel[6:-1], url[url.index('<')+1:-1]) for url, rel in
+#             [link.split(';') for link in
+#                 r.headers['link'].split(',')]])
+#     while 'last' in pages and 'next' in pages:
+#         r = requests.get(pages['next'], auth=AUTH)
+#         write_issues(r)
+#         if pages['next'] == pages['last']:
+#             break
+
 if 'link' in r.headers:
     pages = dict(
         [(rel[6:-1], url[url.index('<')+1:-1]) for url, rel in
@@ -66,3 +77,7 @@ if 'link' in r.headers:
         write_issues(r)
         if pages['next'] == pages['last']:
             break
+        pages = dict(
+        [(rel[6:-1], url[url.index('<')+1:-1]) for url, rel in
+            [link.split(';') for link in
+                r.headers['link'].split(',')]])
