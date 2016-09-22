@@ -22,7 +22,7 @@ ISSUES_FOR_REPO_URL = 'https://api.github.com/repos/%s/issues' % REPO
 AUTH = (GITHUB_USER, GITHUB_PASSWORD)
 REQUEST_COUNT = 0
 REQUESTS_REMAINING = requests.get("https://api.github.com/rate_limit", auth=AUTH).json()['rate']['remaining']
-WAIT_TIME = 0
+WAIT_TIME = 3600/REQUESTS_REMAINING
 
 def write_issues(response):
     "output a list of issues to csv"
