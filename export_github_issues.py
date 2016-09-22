@@ -42,10 +42,11 @@ def write_issues(response):
             comments = comments_request.json()
         if comments != "":
             comments_list = get_comments(comments)
+        all_comments = "\n".join(comments_list)
         params = issue['url'][29:].encode('utf-8')
         issue_url = "https://github.com/" +  params
         # Select the values from the issue to put into the row
-        row = [issue['title'].encode('utf-8'), issue['body'].encode('utf-8'), comments_list, issue_url]
+        row = [issue['title'].encode('utf-8'), issue['body'].encode('utf-8'), all_comments, issue_url]
         csvout.writerow(row)
 
 def get_comments(comments):
