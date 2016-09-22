@@ -22,7 +22,7 @@ ISSUES_FOR_REPO_URL = 'https://api.github.com/repos/%s/issues' % REPO
 AUTH = (GITHUB_USER, GITHUB_PASSWORD)
 REQUEST_COUNT = 0
 REQUESTS_REMAINING = requests.get("https://api.github.com/rate_limit", auth=AUTH).json()['rate']['remaining']
-WAIT_TIME = 3600/REQUESTS_REMAINING
+WAIT_TIME = 0
 
 def write_issues(response):
     "output a list of issues to csv"
@@ -51,7 +51,7 @@ def write_issues(response):
 def get_comments(comments):
     comments_list = []
     for c in comments:
-        comment = (c['user']['login'].encode('utf-8'), c['body'].encode('utf-8'))
+        comment = c['user']['login'].encode('utf-8') + ": " + c['body'].encode('utf-8')
         comments_list.append(comment)
     return comments_list
 
