@@ -82,7 +82,7 @@ if 'link' in r.headers:
         REQUEST_COUNT += 1
         write_issues(r)
         print REQUEST_COUNT
-        if REQUEST_COUNT > 1000:
+        if REQUEST_COUNT > 500:
             print "Request limit. Stopping..."
             break
         if pages['next'] == pages['last']:
