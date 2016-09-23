@@ -30,6 +30,10 @@ def write_issues(response):
     if not response.status_code == 200:
         raise Exception(response.status_code)
     for issue in response.json():
+        # for i in issue:
+        #     print i
+        if "pull_request" in issue.keys():
+            continue
         comments = ""
         comments_list = []
         comments_url = issue['comments_url'].encode('utf-8')
